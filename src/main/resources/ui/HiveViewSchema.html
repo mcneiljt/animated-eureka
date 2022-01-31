@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Schema</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        table {
+            margin: 0 auto;
+            font-size: large;
+            border: 1px solid black;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: xx-large;
+        }
+
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        td {
+            font-weight: lighter;
+        }
+
+        #buttonHolder {
+            text-align:center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body >
+    <h1>Schema Viewer: {{db}}.{{tableName}}</h1>
+    <div id="buttonHolder">
+        <button id="addColumn">Add Column</button>
+<!--        TODO: <button id="submit">Save</button>-->
+    </div>
+    <table id="table">
+        <tr>
+            <th>Column Name</th>
+            <th>Column Type</th>
+            <th>Comments</th>
+        </tr>
+
+        <script>
+            $(document).ready(function () {
+                $.get("http://localhost:8080/schemas/{{db}}/{{tableName}}", function (data) {
+                    var schema = '';
+                    $.each(data.fields, function (k,v) {
+                        schema += '<tr><td><input type="text" value="' + v.name + '"/></td>';
+                        schema += '<td><input type="text" value="' + v.type + '"/></td>';
+                        if(v.comment) {
+                            schema += '<td><input type="text" value="' + v.comment + '"/></td></tr>';
+                        } else {
+                            schema += '<td><input type="text" placeholder="Column Description"/></td></tr>';
+                        }
+                    });
+                    $('#table').append(schema);
+                });
+                $('#addColumn').click(function () {
+                    var emptyRow = '';
+                        emptyRow += '<tr><td><input type="text" placeholder="Column Name"/></td>';
+                        emptyRow += '<td><input type="text" placeholder="Column Type"/></td>';
+                        emptyRow += '<td><input type="text" placeholder="Column Description"/></td></tr>';
+                    $('#table').append(emptyRow);
+                });
+            });
+
+        </script>
+    </table>
+</body>
+</html>
