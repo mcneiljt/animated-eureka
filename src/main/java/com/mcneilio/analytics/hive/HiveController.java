@@ -13,11 +13,13 @@ import java.util.stream.Collectors;
 
 public class HiveController {
     static public void main(String[] args) {
-        System.out.println("Firing up on localhost port 8080, hardcoded.");
+        String listenAddr = System.getenv("LISTEN_ADDR");
+        int listenPort = Integer.parseInt(System.getenv("LISTEN_PORT"));
+        System.out.println("Firing up on " + listenAddr + " port " + listenPort + ", hardcoded.");
         HiveConnector hive = HiveConnector.getConnector();
         String viewTemplate = getTemplate();
         Undertow server = Undertow.builder()
-                .addHttpListener(8080, "localhost")
+                .addHttpListener(listenPort, listenAddr)
                 .setHandler(Handlers.path()
                         .addExactPath("/", exchange -> {
                             exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");

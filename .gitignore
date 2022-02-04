@@ -53,4 +53,3 @@ buildNumber.properties
 .idea/
 *.iml
 **/settings.xml
-dependency-reduced-pom.xml
