@@ -62,7 +62,9 @@ public class HiveController {
                                     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
                                     String renderedView = viewTemplate
                                             .replace("{{db}}", params.getParameters().get("db"))
-                                            .replace("{{tableName}}", params.getParameters().get("tableName"));
+                                            .replace("{{tableName}}", params.getParameters().get("tableName"))
+                                            .replace("{{port}}", listenPort+"")
+                                            .replace("{{hostname}}", System.getenv("LISTEN_HOST"));
                                     exchange.getResponseSender().send(renderedView);
                                 }))
                 ).build();
