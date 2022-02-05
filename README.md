@@ -1,4 +1,4 @@
-# hive-controller
+
 A restful json interface for hive metastore columns.
 
 ## future josh problems
