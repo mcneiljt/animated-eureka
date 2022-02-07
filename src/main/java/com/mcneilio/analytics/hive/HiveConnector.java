@@ -64,6 +64,19 @@ public class HiveConnector {
         }
     }
 
+    public String listTables(String db) {
+        try {
+            List<String> tables = client.getTables(db, "");
+            return gson.toJson(tables);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            // TODO: error handling
+            System.exit(1);
+            return null;
+        }
+    }
+
     private HiveMetaStoreClient client;
     private Gson gson;
 

@@ -34,8 +34,7 @@ public class HiveController {
                                 .get("/{database}", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
                                     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                                    exchange.getResponseSender().send("List schemas for a specific database: " +
-                                            params.getParameters().get("database") + "\n");
+                                    exchange.getResponseSender().send(hive.listTables(params.getParameters().get("database")));
                                     exchange.getResponseSender().close();
                                 })
                                 .get("/{db}/{tableName}", exchange -> {
