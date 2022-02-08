@@ -66,7 +66,7 @@ public class HiveConnector {
 
     public String listTables(String db) {
         try {
-            List<String> tables = client.getTables(db, "");
+            List<String> tables = client.getTables(db, "*");
             return gson.toJson(tables);
         }
         catch (Exception e) {
@@ -75,6 +75,11 @@ public class HiveConnector {
             System.exit(1);
             return null;
         }
+    }
+
+    public String addTable(String db, String tbl) {
+
+        return "";
     }
 
     private HiveMetaStoreClient client;
