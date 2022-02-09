@@ -78,7 +78,15 @@ public class HiveConnector {
     }
 
     public String addTable(String db, String tbl) {
-
+        Table table = gson.fromJson(tbl, Table.class);
+        try {
+            client.createTable(table);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            // TODO: error handling
+            System.exit(1);
+        }
         return "";
     }
 

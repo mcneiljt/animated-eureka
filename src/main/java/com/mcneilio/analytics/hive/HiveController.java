@@ -39,11 +39,9 @@ public class HiveController {
                                 })
                                 .post("/{database}", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
-                                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
                                     exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
                                         hive.addTable(params.getParameters().get("db"), new String(m));
                                     });
-                                    exchange.getResponseSender().send("add a table");
                                     exchange.getResponseSender().close();
                                 })
                                 .get("/{db}/{tableName}", exchange -> {
@@ -56,7 +54,6 @@ public class HiveController {
                                 })
                                 .put("/{db}/{tableName}", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
-                                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
                                     exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
                                         hive.setSchema(params.getParameters().get("db"),
                                                 params.getParameters().get("tableName"), new String(m));
