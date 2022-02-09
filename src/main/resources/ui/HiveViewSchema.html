@@ -52,7 +52,7 @@
 
         <script>
             $(document).ready(function () {
-                $.get("http://{{hostname}}:{{port}}/schemas/{{db}}/{{tableName}}", function (data) {
+                $.get("http://{{hostname}}:{{port}}/schemas/{{db}}/{{tableName}}/fields", function (data) {
                     var schema = '';
                     $.each(data.fields, function (k,v) {
                         schema += '<tr><td><input type="text" value="' + v.name + '"/></td>';
