@@ -44,7 +44,7 @@ public class HiveController {
                                     });
                                     exchange.getResponseSender().close();
                                 })
-                                .get("/{db}/{tableName}", exchange -> {
+                                .get("/{db}/{tableName}/fields", exchange -> {
                                     exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "*");
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
                                     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
@@ -52,7 +52,7 @@ public class HiveController {
                                             params.getParameters().get("tableName")) + "\n");
                                     exchange.getResponseSender().close();
                                 })
-                                .put("/{db}/{tableName}", exchange -> {
+                                .put("/{db}/{tableName}/fields", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
                                     exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
                                         hive.setSchema(params.getParameters().get("db"),
