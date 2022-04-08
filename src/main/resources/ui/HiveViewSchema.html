@@ -41,7 +41,7 @@
     <h1>Schema Viewer: {{db}}.{{tableName}}</h1>
     <div id="buttonHolder">
         <button id="addColumn">Add Column</button>
-<!--        TODO: <button id="submit">Save</button>-->
+        <button id="saveChanges">Save</button>
     </div>
     <table id="table">
         <tr>
@@ -71,6 +71,26 @@
                         emptyRow += '<td><input type="text" placeholder="Column Type"/></td>';
                         emptyRow += '<td><input type="text" placeholder="Column Description"/></td></tr>';
                     $('#table').append(emptyRow);
+                });
+                $('#saveChanges').click(function () {
+                    let arry = $('#table > tbody > tr').slice(1).map(function () {
+                        return {
+                            name: $(this).find('input').eq(0).val(),
+                            type: $(this).find('input').eq(1).val(),
+                            comment: $(this).find('input').eq(2).val(),
+                        };
+                    }).get();
+                    console.log(arry);
+                    let data = { fields: arry };
+                    $.ajax({
+                        url: "http://{{hostname}}:{{port}}/schemas/{{db}}/{{tableName}}/fields",
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        type: 'put',
+                        success: function(data) {
+                            console.log(data);
+                        }
+                    });
                 });
             });
 

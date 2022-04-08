@@ -90,6 +90,18 @@ public class HiveConnector {
         return "";
     }
 
+    public String getTable(String db, String tableName) {
+        try {
+            return gson.toJson(client.getTable(db, tableName));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            // TODO: error handling
+            System.exit(1);
+            return null;
+        }
+    }
+
     private HiveMetaStoreClient client;
     private Gson gson;
 
