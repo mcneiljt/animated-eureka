@@ -42,10 +42,10 @@
     <ul id="list">
         <script>
             $(document).ready(function () {
-                $.get("http://{{hostname}}:{{port}}/schemas/{{db}}", function (data) {
+                $.get("{{url_prefix}}/schemas/{{db}}", function (data) {
                     let list = JSON.parse(data);
                     $.each(list, function (i,v) {
-                        $('#list').append('<li><a href="http://{{hostname}}:{{port}}/ui/{{db}}/'+v+'">'+v+'</a></li>');
+                        $('#list').append('<li><a href="{{url_prefix}}/ui/{{db}}/'+v+'">'+v+'</a></li>');
                     });
                 });
             });

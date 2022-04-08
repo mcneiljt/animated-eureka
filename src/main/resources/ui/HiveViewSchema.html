@@ -52,7 +52,7 @@
 
         <script>
             $(document).ready(function () {
-                $.get("http://{{hostname}}:{{port}}/schemas/{{db}}/{{tableName}}/fields", function (data) {
+                $.get("{{url_prefix}}/schemas/{{db}}/{{tableName}}/fields", function (data) {
                     var schema = '';
                     $.each(data.fields, function (k,v) {
                         schema += '<tr><td><input type="text" value="' + v.name + '"/></td>';
@@ -80,10 +80,9 @@
                             comment: $(this).find('input').eq(2).val(),
                         };
                     }).get();
-                    console.log(arry);
                     let data = { fields: arry };
                     $.ajax({
-                        url: "http://{{hostname}}:{{port}}/schemas/{{db}}/{{tableName}}/fields",
+                        url: "{{url_prefix}}/schemas/{{db}}/{{tableName}}/fields",
                         data: JSON.stringify(data),
                         contentType: 'application/json',
                         type: 'put',
