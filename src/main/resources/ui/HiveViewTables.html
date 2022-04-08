@@ -1,0 +1,56 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Schema</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        table {
+            margin: 0 auto;
+            font-size: large;
+            border: 1px solid black;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: xx-large;
+        }
+
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            font-weight: bold;
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        td {
+            font-weight: lighter;
+        }
+
+        #buttonHolder {
+            text-align:center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body >
+    <h1>Table Viewer: {{db}}</h1>
+    <ul id="list">
+        <script>
+            $(document).ready(function () {
+                $.get("http://{{hostname}}:{{port}}/schemas/{{db}}", function (data) {
+                    let list = JSON.parse(data);
+                    $.each(list, function (i,v) {
+                        $('#list').append('<li><a href="http://{{hostname}}:{{port}}/ui/{{db}}/'+v+'">'+v+'</a></li>');
+                    });
+                });
+            });
+
+        </script>
+    </ul>
+</body>
+</html>

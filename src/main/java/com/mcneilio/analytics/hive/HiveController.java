@@ -18,6 +18,7 @@ public class HiveController {
         System.out.println("Firing up on " + listenAddr + " port " + listenPort + ", hardcoded.");
         HiveConnector hive = HiveConnector.getConnector();
         String viewTemplate = getTemplate();
+        String viewTemplate2 = getTemplate2();
         Undertow server = Undertow.builder()
                 .addHttpListener(listenPort, listenAddr)
                 .setHandler(Handlers.path()
@@ -77,7 +78,17 @@ public class HiveController {
                                             .replace("{{port}}", listenPort+"")
                                             .replace("{{hostname}}", System.getenv("LISTEN_HOST"));
                                     exchange.getResponseSender().send(renderedView);
-                                }))
+                                })
+                                .get("/{db}", exchange -> {
+                                    PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
+                                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
+                                    String renderedView = viewTemplate2
+                                            .replace("{{db}}", params.getParameters().get("db"))
+                                            .replace("{{port}}", listenPort + "")
+                                            .replace("{{hostname}}", System.getenv("LISTEN_HOST"));
+                                    exchange.getResponseSender().send(renderedView);
+                                })
+                        )
                 ).build();
         server.start();
     }
@@ -86,6 +97,13 @@ public class HiveController {
         // TODO: this fails to read in IDE because resource files are annoying
         HiveController obj = new HiveController();
         InputStream in = obj.getClass().getClassLoader().getResourceAsStream("ui/HiveViewSchema.html");
+        return new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
+    }
+
+    private static String getTemplate2() {
+        // TODO: this fails to read in IDE because resource files are annoying
+        HiveController obj = new HiveController();
+        InputStream in = obj.getClass().getClassLoader().getResourceAsStream("ui/HiveViewTables.html");
         return new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
     }
 }
