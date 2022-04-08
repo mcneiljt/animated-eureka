@@ -35,10 +35,18 @@
             text-align:center;
             padding: 10px;
         }
+
+        #unsavedChanges {
+            text-align:center;
+            padding: 10px;
+            color: red;
+            display: none;
+        }
     </style>
 </head>
 <body >
     <h1>Schema Viewer: {{db}}.{{tableName}}</h1>
+    <div id="unsavedChanges">WARNING: You have unsaved changes!</div>
     <div id="buttonHolder">
         <button id="addColumn">Add Column</button>
         <button id="saveChanges">Save</button>
@@ -95,6 +103,10 @@
                 });
                 $('#table').on('click', '.removeColumn', function () {
                     $(this).closest('tr').remove();
+                    $('#unsavedChanges').show();
+                });
+                $('#table').on('input', 'input', function () {
+                    $('#unsavedChanges').show();
                 });
             });
 
