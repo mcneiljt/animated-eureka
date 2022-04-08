@@ -58,10 +58,11 @@
                         schema += '<tr><td><input type="text" value="' + v.name + '"/></td>';
                         schema += '<td><input type="text" value="' + v.type + '"/></td>';
                         if(v.comment) {
-                            schema += '<td><input type="text" value="' + v.comment + '"/></td></tr>';
+                            schema += '<td><input type="text" value="' + v.comment + '"/></td>';
                         } else {
-                            schema += '<td><input type="text" placeholder="Column Description"/></td></tr>';
+                            schema += '<td><input type="text" placeholder="Column Description"/></td>';
                         }
+                        schema += '<td><button class="removeColumn">Remove</button></td></tr>';
                     });
                     $('#table').append(schema);
                 });
@@ -69,7 +70,8 @@
                     var emptyRow = '';
                         emptyRow += '<tr><td><input type="text" placeholder="Column Name"/></td>';
                         emptyRow += '<td><input type="text" placeholder="Column Type"/></td>';
-                        emptyRow += '<td><input type="text" placeholder="Column Description"/></td></tr>';
+                        emptyRow += '<td><input type="text" placeholder="Column Description"/></td>';
+                        emptyRow += '<td><button class="removeColumn">Remove</button></td></tr>';
                     $('#table').append(emptyRow);
                 });
                 $('#saveChanges').click(function () {
@@ -90,6 +92,9 @@
                             console.log(data);
                         }
                     });
+                });
+                $('#table').on('click', '.removeColumn', function () {
+                    $(this).closest('tr').remove();
                 });
             });
 
