@@ -34,7 +34,7 @@ public class HiveController {
                                 })
                                 .get("/{database}", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
-                                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+                                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
                                     exchange.getResponseSender().send(hive.listTables(params.getParameters().get("database")) + "\n");
                                     exchange.getResponseSender().close();
                                 })
@@ -92,14 +92,12 @@ public class HiveController {
     }
 
     private static String getTemplate() {
-        // TODO: this fails to read in IDE because resource files are annoying
         HiveController obj = new HiveController();
         InputStream in = obj.getClass().getClassLoader().getResourceAsStream("ui/HiveViewSchema.html");
         return new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
     }
 
     private static String getTemplate2() {
-        // TODO: this fails to read in IDE because resource files are annoying
         HiveController obj = new HiveController();
         InputStream in = obj.getClass().getClassLoader().getResourceAsStream("ui/HiveViewTables.html");
         return new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
