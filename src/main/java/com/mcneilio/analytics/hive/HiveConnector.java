@@ -37,6 +37,7 @@ public class HiveConnector {
         this.gson = new Gson();
     }
 
+    // TODO: Deprecated
     public String getSchema(String db, String tableName) {
         try {
             Fields fields = new Fields();
@@ -50,6 +51,7 @@ public class HiveConnector {
         }
     }
 
+    // TODO: Deprecated
     public void setSchema(String db, String tableName, String fields) {
         List<FieldSchema> fieldList =  gson.fromJson(fields, Fields.class).fields;
         try {
@@ -102,9 +104,22 @@ public class HiveConnector {
         }
     }
 
+    public String updateTable(String db, String tableName, String tbl) {
+        Table table = gson.fromJson(tbl, Table.class);
+        try {
+            client.alter_table(db, tableName, table);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return "";
+    }
+
     private HiveMetaStoreClient client;
     private Gson gson;
 
+    // TODO: Deprecated
     private class Fields {
         List<FieldSchema> fields;
 

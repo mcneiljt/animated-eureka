@@ -19,6 +19,7 @@ public class HiveController {
         HiveConnector hive = HiveConnector.getConnector();
         String viewTemplate = getTemplate();
         String viewTemplate2 = getTemplate2();
+        String viewTemplate3 = getTemplate3();
         Undertow server = Undertow.builder()
                 .addHttpListener(listenPort, listenAddr)
                 .setHandler(Handlers.path()
@@ -48,9 +49,23 @@ public class HiveController {
                                 .get("/{database}/{tableName}", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
                                     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-                                    exchange.getResponseSender().send(hive.getTable(params.getParameters().get("database"), params.getParameters().get("tableName")) + "\n");
+                                    if(!params.getParameters().get("tableName").isEmpty())
+                                        exchange.getResponseSender().send(hive.getTable(params.getParameters().get("database"), params.getParameters().get("tableName")) + "\n");
+                                    else
+                                        exchange.getResponseSender().send("{}\n");
                                     exchange.getResponseSender().close();
                                 })
+                                .put("/{database}/{tableName}", exchange -> {
+                                    PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
+                                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+                                    exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
+                                        hive.updateTable(params.getParameters().get("database"),
+                                                params.getParameters().get("tableName"), new String(m));
+                                    });
+                                    exchange.getResponseSender().send("might have accepted it" + "\n");
+                                    exchange.getResponseSender().close();
+                                })
+                                // TODO: Deprecated
                                 .get("/{db}/{tableName}/fields", exchange -> {
                                     exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "*");
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
@@ -59,6 +74,7 @@ public class HiveController {
                                             params.getParameters().get("tableName")) + "\n");
                                     exchange.getResponseSender().close();
                                 })
+                                // TODO: Deprecated
                                 .put("/{db}/{tableName}/fields", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
                                     exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
@@ -72,10 +88,18 @@ public class HiveController {
                                 .get("/{db}/{tableName}", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
                                     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html");
-                                    String renderedView = viewTemplate
-                                            .replace("{{db}}", params.getParameters().get("db"))
-                                            .replace("{{tableName}}", params.getParameters().get("tableName"))
-                                            .replace("{{url_prefix}}", System.getenv("URL_PREFIX"));
+                                    String renderedView;
+                                    if(params.getParameters().get("tableName").isEmpty()) {
+                                        renderedView = viewTemplate3
+                                                .replace("{{db}}", params.getParameters().get("db"))
+                                                .replace("{{url_prefix}}", System.getenv("URL_PREFIX"));
+                                    }
+                                    else {
+                                        renderedView = viewTemplate
+                                                .replace("{{db}}", params.getParameters().get("db"))
+                                                .replace("{{tableName}}", params.getParameters().get("tableName"))
+                                                .replace("{{url_prefix}}", System.getenv("URL_PREFIX"));
+                                    }
                                     exchange.getResponseSender().send(renderedView);
                                 })
                                 .get("/{db}", exchange -> {
@@ -100,6 +124,12 @@ public class HiveController {
     private static String getTemplate2() {
         HiveController obj = new HiveController();
         InputStream in = obj.getClass().getClassLoader().getResourceAsStream("ui/HiveViewTables.html");
+        return new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
+    }
+
+    private static String getTemplate3() {
+        HiveController obj = new HiveController();
+        InputStream in = obj.getClass().getClassLoader().getResourceAsStream("ui/HiveCreateTable.html");
         return new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
     }
 }

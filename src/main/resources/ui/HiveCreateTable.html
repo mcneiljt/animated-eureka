@@ -55,14 +55,14 @@
     </style>
 </head>
 <body>
-    <h1>Table Viewer: {{db}}.{{tableName}}</h1>
+    <h1>Creating table in: {{db}}</h1>
     <div id="unsavedChanges">WARNING: You have unsaved changes!</div>
     <div id="buttonHolder">
         <button id="addColumn">Add Column</button>
         <button id="saveChanges">Save</button>
     </div>
     <div id="tableName">Table Name: <input type="text" id="inputTableName"></div>
-    <div id="tableSerializationLib">Table Serialization Lib: <input type="text" id="inputSerLib"></div>
+    <div id="tableSerializationLib">Table Serialization Lib: <input type="text" id="inputSerLib" value="org.apache.hadoop.hive.ql.io.orc.OrcSerde"></div>
     <table id="table">
         <tr>
             <th>Column Name</th>
@@ -72,24 +72,6 @@
 
         <script>
             $(document).ready(function () {
-                let tableData;
-                $.get("{{url_prefix}}/schemas/{{db}}/{{tableName}}", function (data) {
-                    tableData = data;
-                    var schema = '';
-                    $.each(data.sd.cols, function (k,v) {
-                        schema += '<tr><td><input type="text" value="' + v.name + '"/></td>';
-                        schema += '<td><input type="text" value="' + v.type + '"/></td>';
-                        if(v.comment) {
-                            schema += '<td><input type="text" value="' + v.comment + '"/></td>';
-                        } else {
-                            schema += '<td><input type="text" placeholder="Column Description"/></td>';
-                        }
-                        schema += '<td><button class="removeColumn">Remove</button></td></tr>';
-                    });
-                    $('#table').append(schema);
-                    $('#inputTableName').val(data.tableName);
-                    $('#inputSerLib').val(data.sd.serdeInfo.serializationLib);
-                });
                 $('#addColumn').click(function () {
                     var emptyRow = '';
                         emptyRow += '<tr><td><input type="text" placeholder="Column Name"/></td>';
@@ -107,16 +89,26 @@
                         };
                     }).get();
 
-                    let data = tableData;
+                    let data = {
+                        tableName: "",
+                        dbName: "{{db}}",
+                        sd: {
+                            cols: [],
+                            serdeInfo: {
+                                serializationLib: ""
+                            }
+                        }
+                    };
+
                     data.sd.cols = arry;
                     data.tableName = $('#inputTableName').val();
                     data.sd.serdeInfo.serializationLib = $('#inputSerLib').val();
 
                     $.ajax({
-                        url: "{{url_prefix}}/schemas/{{db}}/{{tableName}}",
+                        url: "{{url_prefix}}/schemas/{{db}}",
                         data: JSON.stringify(data),
                         contentType: 'application/json',
-                        type: 'put',
+                        type: 'post',
                         success: function(data) {
                             console.log(data);
                         }
