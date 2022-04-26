@@ -37,35 +37,6 @@ public class HiveConnector {
         this.gson = new Gson();
     }
 
-    // TODO: Deprecated
-    public String getSchema(String db, String tableName) {
-        try {
-            Fields fields = new Fields();
-            fields.fields = this.client.getSchema(db, tableName);
-            return gson.toJson(fields);
-        } catch (Exception e) {
-            e.printStackTrace();
-            // TODO: error handling (currently crashes app on unknown schema)
-            System.exit(1);
-            return null;
-        }
-    }
-
-    // TODO: Deprecated
-    public void setSchema(String db, String tableName, String fields) {
-        List<FieldSchema> fieldList =  gson.fromJson(fields, Fields.class).fields;
-        try {
-            Table tbl = new Table(client.getTable(db, tableName));
-            StorageDescriptor sd = tbl.getSd();
-            sd.setCols(fieldList);
-            client.alter_table(db, tableName, tbl);
-        } catch (Exception e) {
-            e.printStackTrace();
-            // TODO: error handling
-            System.exit(1);
-        }
-    }
-
     public String listTables(String db) {
         try {
             List<String> tables = client.getTables(db, "*");
@@ -118,13 +89,4 @@ public class HiveConnector {
 
     private HiveMetaStoreClient client;
     private Gson gson;
-
-    // TODO: Deprecated
-    private class Fields {
-        List<FieldSchema> fields;
-
-        Fields() {
-            fields = new ArrayList<>();
-        }
-    }
 }

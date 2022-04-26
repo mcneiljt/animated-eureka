@@ -65,24 +65,6 @@ public class HiveController {
                                     exchange.getResponseSender().send("might have accepted it" + "\n");
                                     exchange.getResponseSender().close();
                                 })
-                                // TODO: Deprecated
-                                .get("/{db}/{tableName}/fields", exchange -> {
-                                    exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "*");
-                                    PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
-                                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-                                    exchange.getResponseSender().send(hive.getSchema(params.getParameters().get("db"),
-                                            params.getParameters().get("tableName")) + "\n");
-                                    exchange.getResponseSender().close();
-                                })
-                                // TODO: Deprecated
-                                .put("/{db}/{tableName}/fields", exchange -> {
-                                    PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
-                                    exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
-                                        hive.setSchema(params.getParameters().get("db"),
-                                                params.getParameters().get("tableName"), new String(m));
-                                    });
-                                    exchange.getResponseSender().close();
-                                })
                         )
                         .addPrefixPath("/ui", Handlers.routing()
                                 .get("/{db}/{tableName}", exchange -> {
