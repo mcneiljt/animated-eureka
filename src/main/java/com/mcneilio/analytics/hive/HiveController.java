@@ -61,7 +61,7 @@ public class HiveController {
                                     exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
                                         hive.updateTable(params.getParameters().get("database"),
                                                 params.getParameters().get("tableName"), new String(m));
-                                        exchange.getResponseSender().send("might have accepted it" + "\n");
+                                        exchange.getResponseSender().send("probably accepted it" + "\n");
                                         exchange.getResponseSender().close();
                                     });
                                 })
