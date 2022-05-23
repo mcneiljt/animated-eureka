@@ -43,8 +43,8 @@ public class HiveController {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
                                     exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
                                         hive.addTable(params.getParameters().get("db"), new String(m));
+                                        exchange.getResponseSender().close();
                                     });
-                                    exchange.getResponseSender().close();
                                 })
                                 .get("/{database}/{tableName}", exchange -> {
                                     PathTemplateMatch params = exchange.getAttachment(PathTemplateMatch.ATTACHMENT_KEY);
@@ -61,9 +61,9 @@ public class HiveController {
                                     exchange.getRequestReceiver().receiveFullBytes((e, m) -> {
                                         hive.updateTable(params.getParameters().get("database"),
                                                 params.getParameters().get("tableName"), new String(m));
+                                        exchange.getResponseSender().send("might have accepted it" + "\n");
+                                        exchange.getResponseSender().close();
                                     });
-                                    exchange.getResponseSender().send("might have accepted it" + "\n");
-                                    exchange.getResponseSender().close();
                                 })
                         )
                         .addPrefixPath("/ui", Handlers.routing()
